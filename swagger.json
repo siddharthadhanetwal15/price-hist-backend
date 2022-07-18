@@ -1,0 +1,198 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "description" : "This is a price hist server.  You can find\nout more about Swagger at\n[http://swagger.io](http://swagger.io) or on\n[irc.freenode.net, #swagger](http://swagger.io/irc/).\n",
+    "version" : "1.0.1",
+    "title" : "Swagger Price-Hist",
+    "termsOfService" : "http://swagger.io/terms/",
+    "contact" : {
+      "email" : "apiteam@swagger.io"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "servers" : [ {
+    "description" : "SwaggerHub API Auto Mocking",
+    "url" : "https://virtserver.swaggerhub.com/siddharthadhanetwal15/price-hist/1.0.1"
+  }, {
+    "url" : "https://petstore.swagger.io/v2"
+  } ],
+  "tags" : [ {
+    "name" : "price",
+    "description" : "Everything about your Price",
+    "externalDocs" : {
+      "description" : "Find out more",
+      "url" : "http://swagger.io"
+    }
+  } ],
+  "paths" : {
+    "/price" : {
+      "post" : {
+        "tags" : [ "price" ],
+        "summary" : "Add a new Price",
+        "operationId" : "addPrice",
+        "responses" : {
+          "201" : {
+            "description" : "Price created"
+          },
+          "405" : {
+            "description" : "Invalid input"
+          }
+        },
+        "security" : [ {
+          "price_auth" : [ "write:prices", "read:prices" ]
+        } ],
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/Price"
+        }
+      },
+      "put" : {
+        "tags" : [ "price" ],
+        "summary" : "Update an existing price",
+        "operationId" : "updatePrice",
+        "responses" : {
+          "200" : {
+            "description" : "Price updated"
+          },
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Price not found"
+          },
+          "405" : {
+            "description" : "Validation exception"
+          }
+        },
+        "security" : [ {
+          "price_auth" : [ "write:prices", "read:prices" ]
+        } ],
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/Price"
+        }
+      },
+      "get" : {
+        "tags" : [ "price" ],
+        "summary" : "Get all prices",
+        "operationId" : "getPrices",
+        "responses" : {
+          "200" : {
+            "description" : "Prices retrieved successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Price"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Prices not found"
+          }
+        },
+        "security" : [ {
+          "price_auth" : [ "read:prices" ]
+        } ]
+      }
+    },
+    "/price/{id}" : {
+      "delete" : {
+        "tags" : [ "price" ],
+        "summary" : "Deletes a price",
+        "operationId" : "deletePrice",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Price id to delete",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Price deleted"
+          },
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Price not found"
+          }
+        },
+        "security" : [ {
+          "price_auth" : [ "write:prices", "read:prices" ]
+        } ]
+      }
+    }
+  },
+  "externalDocs" : {
+    "description" : "Find out more about Swagger",
+    "url" : "http://swagger.io"
+  },
+  "components" : {
+    "schemas" : {
+      "Price" : {
+        "type" : "object",
+        "required" : [ "value", "type", "instrument" ],
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "instrument" : {
+            "type" : "string",
+            "example" : "IFFB"
+          },
+          "value" : {
+            "type" : "number",
+            "example" : 10.2
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "price type",
+            "enum" : [ "high", "low", "open", "close" ]
+          }
+        }
+      }
+    },
+    "requestBodies" : {
+      "Price" : {
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/Price"
+            }
+          }
+        },
+        "description" : "Price object that needs to be added",
+        "required" : true
+      }
+    },
+    "securitySchemes" : {
+      "price_auth" : {
+        "type" : "oauth2",
+        "flows" : {
+          "implicit" : {
+            "authorizationUrl" : "http://petstore.swagger.io/oauth/dialog",
+            "scopes" : {
+              "write:prices" : "modify prices",
+              "read:prices" : "read prices"
+            }
+          }
+        }
+      },
+      "api_key" : {
+        "type" : "apiKey",
+        "name" : "api_key",
+        "in" : "header"
+      }
+    }
+  }
+}
