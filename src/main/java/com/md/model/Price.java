@@ -1,12 +1,16 @@
 package com.md.model;
 
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import org.springframework.validation.annotation.Validated;
+
+import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
@@ -16,9 +20,13 @@ import javax.validation.constraints.*;
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2022-07-18T11:15:17.747Z[GMT]")
 
-
+@Entity
+@Table(name="price")
 public class Price   {
+  @JsonIgnore
   @JsonProperty("id")
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id = null;
 
   @JsonProperty("instrument")

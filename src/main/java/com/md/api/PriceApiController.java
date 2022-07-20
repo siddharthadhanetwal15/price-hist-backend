@@ -2,11 +2,13 @@ package com.md.api;
 
 import com.md.model.Price;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.md.repository.PriceRepository;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +30,9 @@ public class PriceApiController implements PriceApi {
 
     private final HttpServletRequest request;
 
+    @Autowired
+    private PriceRepository priceRepository;
+
     @org.springframework.beans.factory.annotation.Autowired
     public PriceApiController(ObjectMapper objectMapper, HttpServletRequest request) {
         this.objectMapper = objectMapper;
@@ -36,31 +41,59 @@ public class PriceApiController implements PriceApi {
 
     public ResponseEntity<Void> addPrice(@Parameter(in = ParameterIn.DEFAULT, description = "Price object that needs to be added", required=true, schema=@Schema()) @Valid @RequestBody Price body) {
         String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+        if (accept != null && accept.contains("application/json")) {
+            try {
+                priceRepository.save(body);
+                return new ResponseEntity<Void>(HttpStatus.CREATED);
+            } catch (Exception e) {
+                log.error("Exception: ", e);
+                return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
     }
 
     public ResponseEntity<Void> deletePrice(@Parameter(in = ParameterIn.PATH, description = "Price id to delete", required=true, schema=@Schema()) @PathVariable("id") Long id) {
         String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+        if (accept != null && accept.contains("application/json")) {
+            try {
+                priceRepository.deleteById(id);
+                return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+            } catch (Exception e) {
+                log.error("Exception: ", e);
+                return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
     }
 
     public ResponseEntity<List<Price>> getPrices() {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
             try {
-                return new ResponseEntity<List<Price>>(objectMapper.readValue("[ {\n  \"instrument\" : \"IFFB\",\n  \"id\" : 0,\n  \"type\" : \"high\",\n  \"value\" : 10.2\n}, {\n  \"instrument\" : \"IFFB\",\n  \"id\" : 0,\n  \"type\" : \"high\",\n  \"value\" : 10.2\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
+                return new ResponseEntity<List<Price>>(priceRepository.findAll(), HttpStatus.OK);
+                //return new ResponseEntity<List<Price>>(objectMapper.readValue("[ {\n  \"instrument\" : \"IFCL\",\n  \"id\" : 1,\n  \"type\" : \"low\",\n  \"value\" : 99.8\n}, {\n  \"instrument\" : \"IFFB\",\n  \"id\" : 2,\n  \"type\" : \"high\",\n  \"value\" : 10.2\n} ]", List.class), HttpStatus.OK);
+            } catch (Exception e) {
+                log.error("Exception: ", e);
                 return new ResponseEntity<List<Price>>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
 
-        return new ResponseEntity<List<Price>>(HttpStatus.NOT_IMPLEMENTED);
+        return new ResponseEntity<List<Price>>(HttpStatus.BAD_REQUEST);
     }
 
     public ResponseEntity<Void> updatePrice(@Parameter(in = ParameterIn.DEFAULT, description = "Price object that needs to be added", required=true, schema=@Schema()) @Valid @RequestBody Price body) {
         String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+        if (accept != null && accept.contains("application/json")) {
+            try {
+                priceRepository.save(body);
+                return new ResponseEntity<Void>(HttpStatus.OK);
+            } catch (Exception e) {
+                log.error("Exception: ", e);
+                return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
     }
 
 }
