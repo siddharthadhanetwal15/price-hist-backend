@@ -3,6 +3,7 @@ package com.md.api;
 import com.md.model.Price;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.md.repository.PriceRepository;
+import com.md.service.PriceService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import springfox.documentation.annotations.Cacheable;
 
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +34,9 @@ public class PriceApiController implements PriceApi {
 
     @Autowired
     private PriceRepository priceRepository;
+
+    @Autowired
+    private PriceService priceService;
 
     @org.springframework.beans.factory.annotation.Autowired
     public PriceApiController(ObjectMapper objectMapper, HttpServletRequest request) {
@@ -71,7 +76,7 @@ public class PriceApiController implements PriceApi {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
             try {
-                return new ResponseEntity<List<Price>>(priceRepository.findAll(), HttpStatus.OK);
+                return new ResponseEntity<List<Price>>(priceService.getPrices(), HttpStatus.OK);
                 //return new ResponseEntity<List<Price>>(objectMapper.readValue("[ {\n  \"instrument\" : \"IFCL\",\n  \"id\" : 1,\n  \"type\" : \"low\",\n  \"value\" : 99.8\n}, {\n  \"instrument\" : \"IFFB\",\n  \"id\" : 2,\n  \"type\" : \"high\",\n  \"value\" : 10.2\n} ]", List.class), HttpStatus.OK);
             } catch (Exception e) {
                 log.error("Exception: ", e);
