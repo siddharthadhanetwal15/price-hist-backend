@@ -18,9 +18,15 @@ http://localhost:8080/
 Change default port value in application.properties
 
 # functionalities covered
+
 swagger generated apis- open API
+
 caching
+
 pagination
+
 rest apis
+
 sonar
+
 springboot ms
