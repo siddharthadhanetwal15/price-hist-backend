@@ -17,10 +17,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -69,7 +66,20 @@ public interface PriceApi {
     @RequestMapping(value = "/price",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<Price>> getPrices();
+    ResponseEntity<List<Price>> getPrices(@RequestParam(required = false) String instrument, @RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "3")int size);
+
+    @Operation(summary = "Get price by id", description = "", security = {
+            @SecurityRequirement(name = "price_auth", scopes = {
+                    "write:prices",
+                    "read:prices"        })    }, tags={ "price" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Price retrieved successfully", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Price.class)))),
+
+            @ApiResponse(responseCode = "404", description = "Prices not found") })
+    @RequestMapping(value = "/price/{id}",
+            produces = { "application/json" },
+            method = RequestMethod.GET)
+    ResponseEntity<Price> getPrice(@Parameter(in = ParameterIn.PATH, description = "Price id to delete", required=true, schema=@Schema()) @PathVariable("id") Long id);
 
 
     @Operation(summary = "Update an existing price", description = "", security = {

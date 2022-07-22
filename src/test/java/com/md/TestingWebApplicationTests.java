@@ -41,6 +41,7 @@ public class TestingWebApplicationTests {
     @Before
     public void setUp(){
         Price price = new Price();
+        price.setId(1l);
         price.setInstrument("IFCL");
         price.setType(Price.TypeEnum.LOW);
         price.setValue(BigDecimal.valueOf(23.4));
@@ -53,7 +54,7 @@ public class TestingWebApplicationTests {
 
     @Test
     public void getPriceServiceTest(){
-        assertThat(priceService.getPrices().size()).isEqualTo(1);
+        assertThat(priceService.getPrice(1l).equals(1l));
     }
 
 }

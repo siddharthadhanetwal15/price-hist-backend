@@ -6,15 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class PriceService {
     @Autowired
     private PriceRepository priceRepository;
 
-    @Cacheable("prices")
-    public List<Price> getPrices(){
-        return priceRepository.findAll();
+    @Cacheable("prices")//only get called first time.. until cache get evicted
+    public Price getPrice(Long id){
+        return priceRepository.findById(id).get();
     }
 }
