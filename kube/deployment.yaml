@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: price-hist-backend
+  name: price-hist-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: price-hist-backend
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: price-hist-backend
+    spec:
+      containers:
+      - image: markdataconsulting/price-hist-backend:1.0.0
+        name: price-hist-backend
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: price-hist-backend
+  name: price-hist-backend
+spec:
+  ports:
+  - name: 8080-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: price-hist-backend
+  type: ClusterIP
+status:
+  loadBalancer: {}
