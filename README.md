@@ -30,3 +30,40 @@ rest apis
 sonar
 
 springboot ms
+
+# docker and kube run
+Intro - https://www.nakivo.com/blog/docker-vs-kubernetes/ 
+
+dockerhub - https://hub.docker.com , https://azure.microsoft.com/en-us/services/container-registry/#overview
+
+docker build -t sidd/price-hist-backend:1.0.0 .
+
+docker image ls
+
+docker ps  
+
+docker exec -it ed7b0c84a00d /bin/sh
+
+docker login --username markdataconsulting --password ssss
+
+docker push markdataconsulting/price-hist-backend:1.0.0 
+
+kubectl cluster-info
+
+https://minikube.sigs.k8s.io/docs/start/
+
+brew install minikube
+
+minikube start
+
+kubectl create deployment price-hist-backend --image=markdataconsulting/price-hist-backend --dry-run -o=yaml > deployment.yaml 
+
+echo --- >> deployment.yaml  
+
+kubectl create service clusterip price-hist-backend --tcp=8080:8080 --dry-run -o=yaml >> deployment.yaml 
+
+kubectl apply -f kube/deployment.yaml
+
+kubectl get pods
+
+ingress - https://kubernetes.io/docs/concepts/services-networking/ingress/
