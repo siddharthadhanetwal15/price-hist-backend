@@ -6,7 +6,7 @@ metadata:
     app: price-hist-backend
   name: price-hist-backend
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: price-hist-backend
@@ -20,7 +20,14 @@ spec:
       containers:
       - image: markdataconsulting/price-hist-backend:1.0.0
         name: price-hist-backend
-        resources: {}
+        resources:
+          limits:
+            cpu: "1"
+          requests:
+            cpu: "0.5"
+        args:
+          - -cpus
+          - "2"
 status: {}
 ---
 apiVersion: v1
